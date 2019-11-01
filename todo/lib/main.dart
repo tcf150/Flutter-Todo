@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:todo/view/TodoCreationDialog.dart';
 import 'package:todo/view/TodoItemListView.dart';
-import 'package:todo/model/TodoItem.dart';
 
-void main() => runApp(MyApp());
+import 'model/TodoModel.dart';
+
+void main() => runApp(ChangeNotifierProvider(
+      builder: (context) => TodoModel(),
+      child: MyApp(),
+    ));
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
@@ -46,27 +51,20 @@ class MyHomePage extends StatefulWidget {
   _MyHomePageState createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> implements TodoCreationDialogCallBack {
-  List<TodoItem> items = List<TodoItem>();
-
-  @override
-  void onItemCreated(TodoItem item) {
-    setState(() {
-      this.items.add(item);
-    });
-  }
-  
+class _MyHomePageState extends State<MyHomePage> {
   void showCreateDialog(BuildContext context) {
-    showDialog(context: context, builder: (BuildContext context) => TodoCreationDialog(
-        callback: this,
-    ));
+    showDialog(
+        context: context,
+        builder: (BuildContext context) => TodoCreationDialog());
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text(widget.title)),
-      body: TodoItemListView(items: items),
+      body: Consumer<TodoModel>(builder: (context, todo, child) {
+        return TodoItemListView(items: todo.items);
+      }),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           showCreateDialog(context);

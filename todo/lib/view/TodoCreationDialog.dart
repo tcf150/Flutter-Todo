@@ -1,15 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:todo/model/TodoItem.dart';
-
-class TodoCreationDialogCallBack {
-  void onItemCreated(TodoItem item) {}
-}
+import 'package:todo/model/TodoModel.dart';
 
 class TodoCreationDialog extends StatefulWidget {
-  TodoCreationDialog({Key key, this.callback}) : super(key: key);
-
-
-  final TodoCreationDialogCallBack callback;
   @override
   TodoCreationDialogState createState() => TodoCreationDialogState();
 }
@@ -23,7 +17,7 @@ class TodoCreationDialogState extends State<TodoCreationDialog> {
     void createTodo() {
       if (titleController.text.isNotEmpty && descriptionController.text.isNotEmpty) {
         Navigator.of(context).pop();
-        widget.callback.onItemCreated(TodoItem(titleController.text, descriptionController.text));
+        Provider.of<TodoModel>(context, listen: false).addTodo(TodoItem(titleController.text, descriptionController.text));
       }
     }
 
